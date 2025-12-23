@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Custom animations */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(500px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rotate-in {
+  0% {
+    transform: rotate(-180deg) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(-90deg) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-rotate-in {
+  animation: rotate-in 0.5s ease-out;
+}
