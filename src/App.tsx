@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Users, X, History, Clock } from 'lucide-react';
+import { Users, X, History, Clock, BarChart3 } from 'lucide-react';
 import Wheel from './components/Wheel';
 import AddMemberForm from './components/AddMemberForm';
 import MembersList from './components/MembersList';
@@ -35,6 +35,7 @@ export default function App(): React.ReactElement {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [showSpeakerModal, setShowSpeakerModal] = useState<boolean>(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState<boolean>(false);
   const [speakingSessions, setSpeakingSessions] = useState<SpeakingSession[]>([]);
   const [currentSession, setCurrentSession] = useState<SpeakingSession | null>(null);
   const [speakingStats, setSpeakingStats] = useState<SpeakingStats[]>([]);
@@ -306,6 +307,13 @@ export default function App(): React.ReactElement {
           </div>
 
           <div className="flex gap-3">
+            <button
+              onClick={() => setShowAnalyticsModal(true)}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
+              title="Meeting Analytics"
+            >
+              <BarChart3 className="text-white" size={24} />
+            </button>
             <button
               onClick={() => setShowHistoryModal(true)}
               className="bg-white/10 backdrop-blur-md rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
@@ -683,6 +691,176 @@ export default function App(): React.ReactElement {
                 {speakingSessions.length === 0 && (
                   <p className="text-white/50 text-center py-8">No sessions recorded yet.</p>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Modal */}
+      {showAnalyticsModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="text-purple-400" size={24} />
+                  <h2 className="text-xl font-bold text-white">Meeting Analytics</h2>
+                </div>
+                <button
+                  onClick={() => setShowAnalyticsModal(false)}
+                  className="text-white/60 hover:text-white transition-all duration-200 hover:scale-110 hover:rotate-90"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Current Meeting Metrics */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-white mb-4">Current Meeting Overview</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center">
+                    <div className="text-2xl font-bold text-blue-400">{members.length}</div>
+                    <div className="text-sm text-white/60">Team Members</div>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center">
+                    <div className="text-2xl font-bold text-green-400">{availableCount}</div>
+                    <div className="text-sm text-white/60">Available</div>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center">
+                    <div className="text-2xl font-bold text-purple-400">{speakingSessions.length}</div>
+                    <div className="text-sm text-white/60">Sessions</div>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center">
+                    <div className="text-2xl font-bold text-orange-400">
+                      {formatDuration(speakingSessions.reduce((total, session) => total + (session.duration || 0), 0))}
+                    </div>
+                    <div className="text-sm text-white/60">Total Time</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Participation Analysis */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-white mb-4">Participation Analysis</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Speaking Distribution */}
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <h4 className="font-semibold text-white mb-3">Speaking Distribution</h4>
+                    <div className="space-y-2">
+                      {speakingStats
+                        .sort((a, b) => b.totalDuration - a.totalDuration)
+                        .slice(0, 5)
+                        .map((stat, index) => (
+                          <div key={stat.member} className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-yellow-400' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-400' : 'bg-white/40'}`}></div>
+                              <span className="text-white text-sm">{stat.member}</span>
+                            </div>
+                            <div className="text-white/80 text-sm">{formatDuration(stat.totalDuration)}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Meeting Efficiency */}
+                  <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <h4 className="font-semibold text-white mb-3">Meeting Efficiency</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-white/60">Avg Session Length</span>
+                        <span className="text-white font-semibold">
+                          {speakingSessions.length > 0
+                            ? formatDuration(Math.floor(speakingSessions.reduce((total, session) => total + (session.duration || 0), 0) / speakingSessions.length))
+                            : '0s'
+                          }
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/60">Speakers per Member</span>
+                        <span className="text-white font-semibold">
+                          {members.length > 0 ? (speakingSessions.length / members.length).toFixed(1) : '0'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/60">Participation Rate</span>
+                        <span className="text-green-400 font-semibold">
+                          {members.length > 0 ? Math.round((speakingStats.filter(s => s.totalSessions > 0).length / members.length) * 100) : 0}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Insights & Recommendations */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Insights & Recommendations</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(() => {
+                    const totalSessions = speakingSessions.length;
+                    const totalTime = speakingSessions.reduce((total, session) => total + (session.duration || 0), 0);
+                    const avgSessionTime = totalSessions > 0 ? totalTime / totalSessions : 0;
+                    const participationRate = members.length > 0 ? (speakingStats.filter(s => s.totalSessions > 0).length / members.length) * 100 : 0;
+
+                    const insights = [];
+
+                    if (participationRate < 70) {
+                      insights.push({
+                        type: 'warning',
+                        title: 'Low Participation',
+                        message: 'Consider encouraging quieter team members to speak more.',
+                        color: 'yellow'
+                      });
+                    }
+
+                    if (avgSessionTime > 300000) { // 5 minutes
+                      insights.push({
+                        type: 'info',
+                        title: 'Long Sessions',
+                        message: 'Consider shorter speaking times for more balanced discussions.',
+                        color: 'blue'
+                      });
+                    }
+
+                    if (totalSessions > members.length * 2) {
+                      insights.push({
+                        type: 'success',
+                        title: 'High Engagement',
+                        message: 'Great participation! Everyone is contributing actively.',
+                        color: 'green'
+                      });
+                    }
+
+                    if (insights.length === 0) {
+                      insights.push({
+                        type: 'neutral',
+                        title: 'Balanced Meeting',
+                        message: 'Your meeting participation looks well-balanced.',
+                        color: 'gray'
+                      });
+                    }
+
+                    return insights.slice(0, 2).map((insight, index) => (
+                      <div key={index} className={`p-4 rounded-xl border backdrop-blur-sm ${
+                        insight.color === 'yellow' ? 'bg-yellow-500/10 border-yellow-400/30' :
+                        insight.color === 'blue' ? 'bg-blue-500/10 border-blue-400/30' :
+                        insight.color === 'green' ? 'bg-green-500/10 border-green-400/30' :
+                        'bg-white/5 border-white/10'
+                      }`}>
+                        <h4 className={`font-semibold mb-1 ${
+                          insight.color === 'yellow' ? 'text-yellow-300' :
+                          insight.color === 'blue' ? 'text-blue-300' :
+                          insight.color === 'green' ? 'text-green-300' :
+                          'text-white'
+                        }`}>
+                          {insight.title}
+                        </h4>
+                        <p className="text-white/80 text-sm">{insight.message}</p>
+                      </div>
+                    ));
+                  })()}
+                </div>
               </div>
             </div>
           </div>
