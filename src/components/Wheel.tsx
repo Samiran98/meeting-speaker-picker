@@ -46,10 +46,10 @@ const Wheel: React.FC<Props> = ({ members, disabledMembers }) => {
                     <stop offset="100%" stopColor="#d97706" />
                 </radialGradient>
                 <filter id="centerGlow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                     <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
                     </feMerge>
                 </filter>
             </defs>
@@ -90,20 +90,20 @@ const Wheel: React.FC<Props> = ({ members, disabledMembers }) => {
                             ) : (
                                 // For multiple members, draw the segment path
                                 <>
-                                  <path
-                                      d={`M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                                      fill={isDisabled ? '#9CA3AF' : colors[index % colors.length]}
-                                      stroke={isDisabled ? '#6B7280' : 'white'}
-                                      strokeWidth={isDisabled ? '3' : '2'}
-                                      opacity={isDisabled ? 0.7 : 1}
-                                      className="transition-all duration-300 hover:opacity-90"
-                                  />
-                                  <path
-                                      d={`M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                                      fill={isDisabled ? 'url(#disabledGradient)' : 'url(#segmentGradient)'}
-                                      opacity={isDisabled ? 0.4 : 0.3}
-                                      className="transition-all duration-300"
-                                  />
+                                    <path
+                                        d={`M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                                        fill={isDisabled ? '#9CA3AF' : colors[index % colors.length]}
+                                        stroke={isDisabled ? '#6B7280' : 'white'}
+                                        strokeWidth={isDisabled ? '3' : '2'}
+                                        opacity={isDisabled ? 0.7 : 1}
+                                        className="transition-all duration-300 hover:opacity-90"
+                                    />
+                                    <path
+                                        d={`M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                                        fill={isDisabled ? 'url(#disabledGradient)' : 'url(#segmentGradient)'}
+                                        opacity={isDisabled ? 0.4 : 0.3}
+                                        className="transition-all duration-300"
+                                    />
                                 </>
                             )}
 
@@ -113,14 +113,14 @@ const Wheel: React.FC<Props> = ({ members, disabledMembers }) => {
                                 x={textX}
                                 y={textY}
                                 fill={isDisabled ? '#374151' : 'white'}
-                                fontSize="15"
+                                fontSize="20"
                                 fontWeight={isDisabled ? '500' : '600'}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
                                 transform={`rotate(${textRotation}, ${textX}, ${textY})`}
                                 opacity={isDisabled ? 0.8 : 1}
                                 textDecoration={isDisabled ? 'line-through' : 'none'}
-                                style={{ textShadow: isDisabled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
+                                style={{ textShadow: isDisabled ? 'none' : '0 2px 4px rgba(0,0,0,0.5)' }}
                             >
                                 {member}
                             </text>
@@ -144,10 +144,10 @@ const Wheel: React.FC<Props> = ({ members, disabledMembers }) => {
 
                 {/* Microphone icon */}
                 <g transform="translate(-6, -8)">
-                  <circle cx="6" cy="6" r="2.5" fill="white" opacity="0.9" />
-                  <rect x="5" y="8.5" width="2" height="6" rx="1" fill="white" opacity="0.9" />
-                  <rect x="3.5" y="14" width="5" height="2" rx="1" fill="white" opacity="0.9" />
-                  <circle cx="6" cy="17" r="1" fill="white" opacity="0.9" />
+                    <circle cx="6" cy="6" r="2.5" fill="white" opacity="0.9" />
+                    <rect x="5" y="8.5" width="2" height="6" rx="1" fill="white" opacity="0.9" />
+                    <rect x="3.5" y="14" width="5" height="2" rx="1" fill="white" opacity="0.9" />
+                    <circle cx="6" cy="17" r="1" fill="white" opacity="0.9" />
                 </g>
             </g>
         </svg>

@@ -273,93 +273,143 @@ export default function App(): React.ReactElement {
   const availableCount = members.filter(m => !disabledMembers.includes(m)).length;
 
   return (
-    <div className="min-h-screen min-w-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
-      {/* Top Right Icons */}
-      <div className="absolute top-4 right-4 z-20 flex gap-2">
-        <button
-          onClick={() => setShowHistoryModal(true)}
-          className="bg-white/30 backdrop-blur-md rounded-full p-3 hover:bg-white/40 transition-all duration-300 hover:scale-110 border border-white/40"
-          title="Speaking History"
-        >
-          <History className="text-white" size={24} />
-        </button>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-white/30 backdrop-blur-md rounded-full p-3 hover:bg-white/40 transition-all duration-300 hover:scale-110 border border-white/40"
-          title="Team Members"
-        >
-          <Users className="text-white" size={24} />
-        </button>
+    <div className="min-h-screen min-w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/5 rounded-full blur-2xl animate-pulse delay-500"></div>
       </div>
+
+      {/* Header */}
+      <header className="relative z-20 p-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+              <Users className="text-white" size={24} />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Meeting Speaker</h1>
+              <p className="text-purple-200 text-sm">Fair & Fun Speaker Selection</p>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowHistoryModal(true)}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
+              title="Speaking History"
+            >
+              <History className="text-white" size={24} />
+            </button>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20 shadow-lg"
+              title="Team Members"
+            >
+              <Users className="text-white" size={24} />
+            </button>
+          </div>
+        </div>
+      </header>
 
       {/* Current Speaker Indicator */}
       {currentSession && (
         <div className="fixed bottom-6 right-6 z-40">
           <button
             onClick={() => setShowSpeakerModal(true)}
-            className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-3 animate-pulse"
+            className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-6 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 animate-pulse border border-white/20"
             title="View Current Speaker"
           >
-            <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
+            <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
             <div className="flex items-center gap-2">
-              <Clock size={16} />
-              <span className="font-semibold text-sm">
+              <Clock size={18} />
+              <span className="font-bold text-sm">
                 {currentSession.member}
               </span>
             </div>
-            <div className="text-xs opacity-90">
+            <div className="text-sm opacity-90 font-mono">
               {formatDuration(currentTime - currentSession.startTime)}
             </div>
           </button>
         </div>
       )}
 
-      {/* Full Page Spinner */}
-      <div className="flex flex-col items-center justify-center min-h-screen p-6 relative z-10">
-        <div className="text-center mb-12 animate-in slide-in-from-top duration-700">
-          <h1 className="text-6xl font-bold text-white mb-3 drop-shadow-lg">
-            Meeting Speaker Spinner
+      {/* Main Content */}
+      <main className="flex flex-col items-center justify-center min-h-[calc(100vh-120px)] p-2 relative z-10">
+        {/* Hero Section */}
+        <div className="text-center mb-4 animate-in slide-in-from-top duration-700">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">
+            Who Speaks Next?
           </h1>
-          <p className="text-white/95 text-xl">Who will speak next? Spin to find out!</p>
+          <p className="text-white/80 text-base md:text-lg max-w-xl mx-auto leading-tight">
+            Spin the wheel to randomly select the next speaker and keep your meetings fair and engaging!
+          </p>
         </div>
 
-        <div className="relative mb-10 animate-in zoom-in duration-500 delay-300 w-[560px] h-[560px]">
-          {/* Wheel Container with Subtle Border */}
-          <div className="absolute inset-0 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full shadow-md p-0.5" style={{ boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)' }}>
-            <div
-              ref={wheelRef}
-              className="transition-transform duration-100 ease-out w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"
-              style={{
-                transform: `rotate(${currentRotation}deg)`,
-                transitionDuration: isSpinning ? '4000ms' : '0ms',
-                transitionTimingFunction: 'cubic-bezier(0.17, 0.67, 0.12, 0.99)'
-              }}
-            >
-              {members.length > 0 ? (
-                <Wheel members={members} disabledMembers={disabledMembers} />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  <div className="text-center">
-                    <Users size={64} className="mx-auto mb-4 opacity-60" />
-                    <p className="text-lg font-semibold">Add team members to start</p>
+        {/* Stats Bar */}
+        <div className="flex gap-3 mb-4 animate-in fade-in duration-500 delay-200">
+          <div className="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20 text-center">
+            <div className="text-white/60 text-xs font-medium">TEAM</div>
+            <div className="text-white text-lg font-bold">{members.length}</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20 text-center">
+            <div className="text-white/60 text-xs font-medium">AVAILABLE</div>
+            <div className="text-green-400 text-lg font-bold">{availableCount}</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20 text-center">
+            <div className="text-white/60 text-xs font-medium">SPOKEN</div>
+            <div className="text-orange-400 text-lg font-bold">{disabledMembers.length}</div>
+          </div>
+        </div>
+
+        {/* Wheel Section */}
+        <div className="relative mb-2 animate-in zoom-in duration-500 delay-300">
+          <div className="relative w-[450px] h-[450px] md:w-[500px] md:h-[500px]">
+            {/* Outer Glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse"></div>
+
+            {/* Wheel Container */}
+            <div className="absolute inset-2 bg-gradient-to-br from-yellow-200/20 to-orange-200/20 rounded-full shadow-2xl p-1 border border-white/10">
+              <div
+                ref={wheelRef}
+                className="transition-transform duration-100 ease-out w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-slate-800 via-purple-800 to-slate-800 shadow-inner"
+                style={{
+                  transform: `rotate(${currentRotation}deg)`,
+                  transitionDuration: isSpinning ? '4000ms' : '0ms',
+                  transitionTimingFunction: 'cubic-bezier(0.17, 0.67, 0.12, 0.99)'
+                }}
+              >
+                {members.length > 0 ? (
+                  <Wheel members={members} disabledMembers={disabledMembers} />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white">
+                    <div className="text-center">
+                      <Users size={48} className="mx-auto mb-3 opacity-60" />
+                      <p className="text-base font-semibold">Add team members to start</p>
+                      <p className="text-xs opacity-75 mt-1">Click the users icon above</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
+
+            {/* Center Pointer */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-red-500 z-10"></div>
           </div>
 
           {/* Confetti Effect */}
           {showConfetti && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {[...Array(50)].map((_, i) => (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full">
+              {[...Array(25)].map((_, i) => (
                 <div
                   key={i}
-                  className="absolute w-3 h-3 animate-bounce"
+                  className="absolute w-2 h-2 animate-bounce"
                   style={{
-                    left: `${50 + (Math.random() - 0.5) * 120}%`,
-                    top: `${50 + (Math.random() - 0.5) * 120}%`,
+                    left: `${50 + (Math.random() - 0.5) * 80}%`,
+                    top: `${50 + (Math.random() - 0.5) * 80}%`,
                     backgroundColor: colors[i % colors.length],
-                    animation: `confetti-fall 3s ease-out ${i * 0.05}s forwards, ping 0.5s ease-out ${i * 0.05}s`,
+                    animation: `confetti-fall 2s ease-out ${i * 0.03}s forwards, ping 0.3s ease-out ${i * 0.03}s`,
                     borderRadius: Math.random() > 0.5 ? '50%' : '0',
                     transform: `rotate(${Math.random() * 360}deg)`
                   }}
@@ -369,7 +419,8 @@ export default function App(): React.ReactElement {
           )}
         </div>
 
-        <div className="mt-6 animate-in slide-in-from-bottom duration-700 delay-500">
+        {/* Controls */}
+        <div className="animate-in slide-in-from-bottom duration-700 delay-500">
           <Controls
             isSpinning={isSpinning}
             availableCount={availableCount}
@@ -379,49 +430,71 @@ export default function App(): React.ReactElement {
             selectedMember={selectedMember}
           />
         </div>
-      </div>
+      </main>
 
       {/* Selected Member Overlay */}
       {selectedMember && !isSpinning && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 flex items-center justify-center animate-in fade-in duration-300">
-          <div className="bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-8 rounded-2xl shadow-lg max-w-md w-full mx-4 text-center animate-in zoom-in duration-500 delay-200">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl max-w-md w-full mx-4 text-center animate-in zoom-in duration-500 delay-200 border border-white/20 p-6">
+            {/* Celebration */}
             <div className="text-6xl mb-4 animate-bounce">🎉</div>
-            <h2 className="text-white text-3xl font-bold mb-2">{selectedMember}</h2>
-            <p className="text-white/90 text-lg mb-4">will speak next!</p>
+
+            {/* Member Info */}
+            <div className="mb-5">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-white/30">
+                <span className="text-white text-3xl font-bold">
+                  {selectedMember.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <h2 className="text-white text-3xl font-bold mb-2">{selectedMember}</h2>
+              <p className="text-white/90 text-lg">will speak next!</p>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 mb-5 border border-white/10">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div className="text-white/60">Sessions</div>
+                  <div className="text-white font-bold text-lg">
+                    {speakingStats.find(s => s.member === selectedMember)?.totalSessions || 0}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-white/60">Total Time</div>
+                  <div className="text-white font-bold text-lg">
+                    {formatDuration(getTotalSpeakingTime(selectedMember))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Speaking Controls */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Clock className="text-white" size={16} />
-                <span className="text-white/90 text-sm">Speaking Session</span>
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 mb-5 border border-white/10">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Clock className="text-white/80" size={16} />
+                <span className="text-white/80 text-sm">Speaking Session</span>
               </div>
+
               {currentSession && currentSession.member === selectedMember ? (
-                <div className="text-white text-sm mb-3">
-                  <div className="text-green-300 font-semibold">Currently Speaking</div>
-                  <div className="text-xs opacity-75">
-                    Total speaking time: {formatDuration(getTotalSpeakingTime(selectedMember))}
-                  </div>
+                <div className="text-green-300 font-semibold text-sm mb-3">
+                  Currently Speaking - {formatDuration(currentTime - currentSession.startTime)}
                 </div>
               ) : (
-                <div className="text-white/70 text-sm mb-3">
-                  <div>Not currently speaking</div>
-                  <div className="text-xs">
-                    Total speaking time: {formatDuration(getTotalSpeakingTime(selectedMember))}
-                  </div>
-                </div>
+                <div className="text-white/70 text-sm mb-3">Ready to start speaking</div>
               )}
+
               <div className="flex gap-2 justify-center">
                 {currentSession && currentSession.member === selectedMember ? (
                   <button
                     onClick={stopSpeaking}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105"
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105"
                   >
                     Stop Speaking
                   </button>
                 ) : (
                   <button
                     onClick={() => startSpeaking(selectedMember)}
-                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105"
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105"
                   >
                     Start Speaking
                   </button>
@@ -429,9 +502,10 @@ export default function App(): React.ReactElement {
               </div>
             </div>
 
+            {/* Close Button */}
             <button
               onClick={() => setSelectedMember(null)}
-              className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-full transition-all duration-300"
+              className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm"
             >
               Got it!
             </button>
@@ -442,18 +516,18 @@ export default function App(): React.ReactElement {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Users className="text-purple-600" size={28} />
-                  <h2 className="text-2xl font-bold text-gray-800">Team Members</h2>
+                  <Users className="text-purple-400" size={24} />
+                  <h2 className="text-xl font-bold text-white">Team Members</h2>
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-110 hover:rotate-90"
+                  className="text-white/60 hover:text-white transition-all duration-200 hover:scale-110 hover:rotate-90"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
               </div>
 
@@ -467,9 +541,9 @@ export default function App(): React.ReactElement {
                 formatDuration={formatDuration}
               />
 
-              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800">
-                  <strong>💡 Tip:</strong> Members who have already spoken will be grayed out and won't be selected again. Use "Reset All Members" to start fresh!
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-blue-400/30">
+                <p className="text-sm text-blue-200">
+                  <strong className="text-blue-300">💡 Tip:</strong> Members who have already spoken will be grayed out and won't be selected again. Use "Reset All Members" to start fresh!
                 </p>
               </div>
             </div>
@@ -480,31 +554,31 @@ export default function App(): React.ReactElement {
       {/* History Modal */}
       {showHistoryModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <History className="text-purple-600" size={28} />
-                  <h2 className="text-2xl font-bold text-gray-800">Speaking History</h2>
+                  <History className="text-purple-400" size={24} />
+                  <h2 className="text-xl font-bold text-white">Speaking History</h2>
                 </div>
                 <button
                   onClick={() => setShowHistoryModal(false)}
-                  className="text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-110 hover:rotate-90"
+                  className="text-white/60 hover:text-white transition-all duration-200 hover:scale-110 hover:rotate-90"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
               </div>
 
               {/* Current Session */}
               {currentSession && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 backdrop-blur-sm rounded-xl border border-green-400/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <Clock className="text-green-600" size={20} />
-                    <h3 className="text-lg font-semibold text-gray-800">Current Speaking Session</h3>
+                    <Clock className="text-green-400 animate-pulse" size={20} />
+                    <h3 className="text-lg font-bold text-green-300">Current Speaking Session</h3>
                   </div>
-                  <p className="text-gray-700">
-                    <strong>{currentSession.member}</strong> has been speaking for{' '}
-                    <span className="text-green-600 font-semibold">
+                  <p className="text-white">
+                    <strong className="text-xl text-green-300">{currentSession.member}</strong> has been speaking for{' '}
+                    <span className="text-2xl font-bold text-green-400">
                       {formatDuration(Date.now() - currentSession.startTime)}
                     </span>
                   </p>
@@ -513,22 +587,22 @@ export default function App(): React.ReactElement {
 
               {/* Speaking Statistics */}
               <div className="mb-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Speaking Statistics</h3>
+                <h3 className="text-xl font-semibold text-white mb-4">Speaking Statistics</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {speakingStats
                     .sort((a, b) => b.totalDuration - a.totalDuration)
                     .map((stat) => (
-                      <div key={stat.member} className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+                      <div key={stat.member} className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">
                         <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-gray-800">{stat.member}</h4>
-                          <span className="text-sm text-purple-600 font-semibold">
+                          <h4 className="font-bold text-lg text-white">{stat.member}</h4>
+                          <span className="text-lg font-bold text-purple-300 bg-purple-500/20 px-2 py-1 rounded-lg">
                             {formatDuration(stat.totalDuration)}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          <div>{stat.totalSessions} session{stat.totalSessions !== 1 ? 's' : ''}</div>
+                        <div className="text-sm text-white/70">
+                          <div className="font-semibold">{stat.totalSessions} session{stat.totalSessions !== 1 ? 's' : ''}</div>
                           {stat.lastSpoken && (
-                            <div className="text-xs opacity-75">
+                            <div className="text-xs text-white/50 mt-1">
                               Last spoken: {new Date(stat.lastSpoken).toLocaleString()}
                             </div>
                           )}
@@ -537,23 +611,23 @@ export default function App(): React.ReactElement {
                     ))}
                 </div>
                 {speakingStats.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No speaking history yet. Start a meeting to track speaking sessions!</p>
+                  <p className="text-white/50 text-center py-8">No speaking history yet. Start a meeting to track speaking sessions!</p>
                 )}
               </div>
 
               {/* Recent Sessions */}
               <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Speaking Sessions</h3>
+                <h3 className="text-xl font-semibold text-white mb-4">Recent Speaking Sessions</h3>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {speakingSessions
                     .sort((a, b) => (b.endTime || b.startTime) - (a.endTime || a.startTime))
                     .map((session) => (
-                      <div key={session.id} className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200">
+                      <div key={session.id} className="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">
                         <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                          <div className={`w-3 h-3 rounded-full ${session.duration ? 'bg-green-400' : 'bg-orange-400 animate-pulse'}`}></div>
                           <div>
-                            <div className="font-semibold text-gray-800">{session.member}</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-bold text-lg text-white">{session.member}</div>
+                            <div className="text-sm text-white/60">
                               {new Date(session.startTime).toLocaleString()}
                               {session.endTime && (
                                 <span> - {new Date(session.endTime).toLocaleString()}</span>
@@ -563,18 +637,18 @@ export default function App(): React.ReactElement {
                         </div>
                         <div className="text-right">
                           {session.duration ? (
-                            <div className="font-semibold text-purple-600">
+                            <div className="font-bold text-xl text-purple-300 bg-purple-500/20 px-3 py-1 rounded-lg">
                               {formatDuration(session.duration)}
                             </div>
                           ) : (
-                            <div className="text-sm text-orange-600 font-semibold">In Progress</div>
+                            <div className="text-sm font-bold text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg animate-pulse">In Progress</div>
                           )}
                         </div>
                       </div>
                     ))}
                 </div>
                 {speakingSessions.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No sessions recorded yet.</p>
+                  <p className="text-white/50 text-center py-8">No sessions recorded yet.</p>
                 )}
               </div>
             </div>
@@ -585,88 +659,88 @@ export default function App(): React.ReactElement {
       {/* Speaker Modal */}
       {showSpeakerModal && currentSession && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Clock className="text-green-600" size={28} />
-                  <h2 className="text-2xl font-bold text-gray-800">Current Speaker</h2>
-                </div>
-                <button
-                  onClick={() => setShowSpeakerModal(false)}
-                  className="text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-110 hover:rotate-90"
-                >
-                  <X size={24} />
-                </button>
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl max-w-md w-full text-center animate-in zoom-in duration-500 delay-200 border border-white/20 p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <Clock className="text-green-400" size={24} />
+                <h2 className="text-xl font-bold text-white">Current Speaker</h2>
               </div>
+              <button
+                onClick={() => setShowSpeakerModal(false)}
+                className="text-white/60 hover:text-white transition-all duration-200 hover:scale-110 hover:rotate-90"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <span className="text-white text-2xl font-bold">
-                    {currentSession.member.charAt(0).toUpperCase()}
+            {/* Speaker Info */}
+            <div className="mb-5">
+              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-white/30">
+                <span className="text-white text-2xl font-bold">
+                  {currentSession.member.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-1">{currentSession.member}</h3>
+              <p className="text-green-300 text-sm">is currently speaking</p>
+            </div>
+
+            {/* Real-time Timer */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 mb-5 border border-white/10">
+              <div className="text-center">
+                <div className="text-white/60 text-xs mb-1">Speaking Time</div>
+                <div className="text-3xl font-bold text-green-400 font-mono">
+                  {formatDuration(currentTime - currentSession.startTime)}
+                </div>
+                <div className="text-white/50 text-xs mt-2">
+                  Started at {new Date(currentSession.startTime).toLocaleTimeString()}
+                </div>
+              </div>
+            </div>
+
+            {/* Session Stats */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 mb-5 border border-white/10">
+              <h4 className="font-semibold text-white mb-3 text-sm">Session Statistics</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-white/60">Total Sessions:</span>
+                  <span className="font-semibold text-white">
+                    {speakingStats.find(s => s.member === currentSession.member)?.totalSessions || 0}
                   </span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-800 mb-2">{currentSession.member}</h3>
-                <p className="text-gray-600">is currently speaking</p>
-              </div>
-
-              {/* Real-time Timer */}
-              <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-6 border border-green-200">
-                <div className="text-center">
-                  <div className="text-sm text-gray-600 mb-1">Speaking Time</div>
-                  <div className="text-4xl font-bold text-green-600 font-mono">
-                    {formatDuration(currentTime - currentSession.startTime)}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-2">
-                    Started at {new Date(currentSession.startTime).toLocaleTimeString()}
-                  </div>
+                <div className="flex justify-between">
+                  <span className="text-white/60">Total Speaking Time:</span>
+                  <span className="font-semibold text-white">
+                    {formatDuration(getTotalSpeakingTime(currentSession.member))}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/60">Average Session:</span>
+                  <span className="font-semibold text-white">
+                    {(() => {
+                      const stats = speakingStats.find(s => s.member === currentSession.member);
+                      if (!stats || stats.totalSessions === 0) return '0s';
+                      return formatDuration(Math.floor(stats.totalDuration / stats.totalSessions));
+                    })()}
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {/* Session Stats */}
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-6 border border-purple-200">
-                <h4 className="font-semibold text-gray-800 mb-3">Session Statistics</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Sessions:</span>
-                    <span className="font-semibold text-purple-600">
-                      {speakingStats.find(s => s.member === currentSession.member)?.totalSessions || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Speaking Time:</span>
-                    <span className="font-semibold text-purple-600">
-                      {formatDuration(getTotalSpeakingTime(currentSession.member))}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Average Session:</span>
-                    <span className="font-semibold text-purple-600">
-                      {(() => {
-                        const stats = speakingStats.find(s => s.member === currentSession.member);
-                        if (!stats || stats.totalSessions === 0) return '0s';
-                        return formatDuration(Math.floor(stats.totalDuration / stats.totalSessions));
-                      })()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex gap-3">
-                <button
-                  onClick={stopSpeaking}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-md"
-                >
-                  Stop Speaking
-                </button>
-                <button
-                  onClick={() => setShowSpeakerModal(false)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-md"
-                >
-                  Close
-                </button>
-              </div>
+            {/* Controls */}
+            <div className="flex gap-3">
+              <button
+                onClick={stopSpeaking}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-md"
+              >
+                Stop Speaking
+              </button>
+              <button
+                onClick={() => setShowSpeakerModal(false)}
+                className="bg-white/20 hover:bg-white/30 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -674,3 +748,4 @@ export default function App(): React.ReactElement {
     </div>
   );
 }
+

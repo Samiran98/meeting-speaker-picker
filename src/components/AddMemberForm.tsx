@@ -16,11 +16,11 @@ const AddMemberForm: React.FC<Props> = ({ newMember, setNewMember, addMember }) 
                 onChange={(e) => setNewMember(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addMember()}
                 placeholder="Enter member name..."
-                className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                className="flex-1 px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:border-purple-400 focus:outline-none backdrop-blur-sm transition-all"
             />
             <button
                 onClick={addMember}
-                className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 font-semibold"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold shadow-lg border border-purple-400/30"
                 type="button"
             >
                 <Plus size={20} />
