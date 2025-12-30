@@ -6,11 +6,12 @@ import MembersList from './components/MembersList';
 import Controls from './components/Controls';
 
 export interface SpeakingSession {
-  id: string;
-  member: string;
-  startTime: number;
-  endTime?: number;
-  duration?: number; // in milliseconds
+   id: string;
+   member: string;
+   startTime: number;
+   endTime?: number;
+   duration?: number; // in milliseconds
+   notes?: string;
 }
 
 export interface SpeakingStats {
@@ -38,6 +39,7 @@ export default function App(): React.ReactElement {
   const [currentSession, setCurrentSession] = useState<SpeakingSession | null>(null);
   const [speakingStats, setSpeakingStats] = useState<SpeakingStats[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [sessionNotes, setSessionNotes] = useState<string>('');
   const wheelRef = useRef<HTMLDivElement | null>(null);
 
   // Load data from storage on mount
@@ -152,10 +154,12 @@ export default function App(): React.ReactElement {
       ...currentSession,
       endTime,
       duration,
+      notes: sessionNotes.trim() || undefined,
     };
 
     setSpeakingSessions(prev => [...prev, completedSession]);
     setCurrentSession(null);
+    setSessionNotes('');
 
     // Update stats
     setSpeakingStats(prev => {
@@ -210,6 +214,13 @@ export default function App(): React.ReactElement {
     if (trimmed && !members.includes(trimmed)) {
       setMembers(prev => [...prev, trimmed]);
       setNewMember('');
+    }
+  };
+
+  const bulkImportMembers = (names: string[]) => {
+    const newMembers = names.filter(name => name && !members.includes(name));
+    if (newMembers.length > 0) {
+      setMembers(prev => [...prev, ...newMembers]);
     }
   };
 
@@ -483,6 +494,20 @@ export default function App(): React.ReactElement {
                 <div className="text-white/70 text-sm mb-3">Ready to start speaking</div>
               )}
 
+              {/* Notes Input */}
+              <div className="mb-3">
+                <label className="block text-white/80 text-xs font-medium mb-1">
+                  Session Notes (optional)
+                </label>
+                <textarea
+                  value={sessionNotes}
+                  onChange={(e) => setSessionNotes(e.target.value)}
+                  placeholder="Add notes about this speaking session..."
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:border-purple-400 focus:outline-none backdrop-blur-sm transition-all resize-none text-sm"
+                  rows={2}
+                />
+              </div>
+
               <div className="flex gap-2 justify-center">
                 {currentSession && currentSession.member === selectedMember ? (
                   <button
@@ -531,7 +556,7 @@ export default function App(): React.ReactElement {
                 </button>
               </div>
 
-              <AddMemberForm newMember={newMember} setNewMember={setNewMember} addMember={addMember} />
+              <AddMemberForm newMember={newMember} setNewMember={setNewMember} addMember={addMember} onBulkImport={bulkImportMembers} />
 
               <MembersList
                 members={members}
@@ -622,28 +647,36 @@ export default function App(): React.ReactElement {
                   {speakingSessions
                     .sort((a, b) => (b.endTime || b.startTime) - (a.endTime || a.startTime))
                     .map((session) => (
-                      <div key={session.id} className="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${session.duration ? 'bg-green-400' : 'bg-orange-400 animate-pulse'}`}></div>
-                          <div>
-                            <div className="font-bold text-lg text-white">{session.member}</div>
-                            <div className="text-sm text-white/60">
-                              {new Date(session.startTime).toLocaleString()}
-                              {session.endTime && (
-                                <span> - {new Date(session.endTime).toLocaleString()}</span>
-                              )}
+                      <div key={session.id} className="p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${session.duration ? 'bg-green-400' : 'bg-orange-400 animate-pulse'}`}></div>
+                            <div>
+                              <div className="font-bold text-lg text-white">{session.member}</div>
+                              <div className="text-sm text-white/60">
+                                {new Date(session.startTime).toLocaleString()}
+                                {session.endTime && (
+                                  <span> - {new Date(session.endTime).toLocaleString()}</span>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          <div className="text-right">
+                            {session.duration ? (
+                              <div className="font-bold text-xl text-purple-300 bg-purple-500/20 px-3 py-1 rounded-lg">
+                                {formatDuration(session.duration)}
+                              </div>
+                            ) : (
+                              <div className="text-sm font-bold text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg animate-pulse">In Progress</div>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-right">
-                          {session.duration ? (
-                            <div className="font-bold text-xl text-purple-300 bg-purple-500/20 px-3 py-1 rounded-lg">
-                              {formatDuration(session.duration)}
-                            </div>
-                          ) : (
-                            <div className="text-sm font-bold text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg animate-pulse">In Progress</div>
-                          )}
-                        </div>
+                        {session.notes && (
+                          <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-400/30">
+                            <div className="text-xs text-blue-300 font-medium mb-1">Session Notes:</div>
+                            <div className="text-sm text-white/90">{session.notes}</div>
+                          </div>
+                        )}
                       </div>
                     ))}
                 </div>
